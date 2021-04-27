@@ -1,0 +1,3 @@
+This is the publicly available GitHub respository accompanying the manuscript by Winter et al. entitled "A landscape epidemiological approach for predicting chronic wasting disease: A case study in Virginia, US."
+
+As outlined in the data accessibility section of the manuscript, in this repository contains sample code and artifical epidemiological data due to privacy restrictions associated with the real CWD data. We encourage all requests for raw data to be sent to the appropriate channels mentioned in our statement.
