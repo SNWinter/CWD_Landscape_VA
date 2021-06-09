@@ -1,4 +1,4 @@
-This is the publicly available GitHub respository accompanying the manuscript by Winter et al. entitled "A landscape epidemiological approach for predicting chronic wasting disease: A case study in Virginia, US." Commented lines are code written in original scripts for actual data.
+This is the publicly available GitHub respository accompanying the manuscript by Winter et al. entitled "A landscape epidemiological approach for predicting chronic wasting disease: A case study in Virginia, US." Commented lines are code written in original scripts for actual data and can therefore be disregarded for review purposes.
 
 Script 1 of the series entitled "Landscape_Data_Preparation.R" is provided for transparency. Reviewers are encouraged to start on Script 2 entitled "Hypervolume_Creation.R". Following in sequential order should work with updated installed packages.
 
