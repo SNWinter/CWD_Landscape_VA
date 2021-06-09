@@ -12,10 +12,10 @@ library(rgdal)
 
 # Load in quadrants shapefiles for later masking
 # Load shapefiles of quadrants
-NE <- readOGR("../Block_Shapefiles", layer = "Northeast_Quadrant")
-NW <- readOGR("../Block_Shapefiles", layer = "Northwest_Quadrant")
-SW <- readOGR("../Block_Shapefiles", layer = "Southwest_Quadrant")
-SE <- readOGR("../Block_Shapefiles", layer = "Southeast_Quadrant")
+NE <- readOGR("../Block_Shapefile", layer = "Northeast_Quadrant")
+NW <- readOGR("../Block_Shapefile", layer = "Northwest_Quadrant")
+SW <- readOGR("../Block_Shapefile", layer = "Southwest_Quadrant")
+SE <- readOGR("../Block_Shapefile", layer = "Southeast_Quadrant")
 
 # NE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northeast_Quadrant")
 # NW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northwest_Quadrant")
@@ -29,19 +29,6 @@ Calibrated.with.NE_SE <- bind(SW, NW)
 Calibrated.with.NW_SW <- bind(NE, SE)
 Calibrated.with.NE_SW <- bind(SE, NW)
 Calibrated.with.NW_SE <- bind(SW, NE)
-
-convert2points <- function(df, crs){
-  df <- as.data.frame(df)
-  df_coord <- df[c("x","y")]
-  df_coord <- na.omit(df_coord)
-  coordinates(df_coord) <- ~x+y
-  proj4string(df_coord) <- crs
-  return(df_coord)
-}
-my_crs <- CRS("+init=epsg:4326")
-positives_reduced1 <- convert2points(positives_reduced, crs = my_crs)
-plot(Calibrated.with.NE_NW, add =T)
-plot(positives_reduced1, col = positives_reduced$block)
 
 shapefiles <- list(Calibrated.with.NE_NW, Calibrated.with.NE_SE, Calibrated.with.NE_SW, 
                    Calibrated.with.NW_SE, Calibrated.with.NW_SW, Calibrated.with.SE_SW)
