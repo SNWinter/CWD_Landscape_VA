@@ -1,6 +1,6 @@
 
 # Hypervolume Uncertainty -------------------------------------------------
-# Script 5 of 7 authored by Steven N. Winter
+# Script 5 of 5 authored by Steven N. Winter
 
 # Install the following packages if not previously installed
 library(sp)

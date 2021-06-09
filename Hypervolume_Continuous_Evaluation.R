@@ -1,6 +1,6 @@
 # Raster Preparation for KDE Partial ROC Evaluation  ----------------------
 
-# Script 4 of 7 authored by Steven N. Winter
+# Script 4 of 5 authored by Steven N. Winter
 
 #Note: Quadrant masking depends on creation of shapefiles covering the extent of the quadrant.
       #Due to the dummy nature of the data in this sample code, quadrant shapefiles listed were created from real CWD data and thus not provided.
@@ -15,10 +15,15 @@ library(rgdal)
 # Load in quadrants shapefiles for later masking
 
 # Load shapefiles of quadrants
-NE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northeast_Quadrant")
-NW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northwest_Quadrant")
-SW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Southwest_Quadrant")
-SE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Southeast_Quadrant")
+NE <- readOGR("./Block_Shapefiles", layer = "Northeast_Quadrant")
+NW <- readOGR("./Block_Shapefiles", layer = "Northwest_Quadrant")
+SW <- readOGR("./Block_Shapefiles", layer = "Southwest_Quadrant")
+SE <- readOGR("./Block_Shapefiles", layer = "Southeast_Quadrant")
+
+# NE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northeast_Quadrant")
+# NW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northwest_Quadrant")
+# SW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Southwest_Quadrant")
+# SE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Southeast_Quadrant")
 
 # Pair quadrants
 Calibrated.with.NE_NW <- bind(SW, SE)
@@ -36,7 +41,7 @@ names(shapefiles) <- c("Calibrated_with_NE_NW", "Calibrated_with_NE_SE", "Calibr
 
 
 
-setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/KDE_Maps")
+setwd("./Presence_only_GeoPartitioning_Eval/KDE_Maps")
 
 
 #Collect continuous rasters
@@ -64,5 +69,5 @@ for (i in 1:6) {
   writeRaster(masked_buffer, filename = file_buffer)
 }
 
-## Note: Evaluation was performed using the shiny app version of ntbox (Osorio-Olivera et al. 2018)
+## Note: Evaluation was performed using the shiny app version of ntbox found at: http://shiny.conabio.gob.mx:3838/nichetoolb2/  (Osorio-Olivera et al. 2018)
 ## Each masked raster written was evaluated using the evaluation data generated in "Hypervolume_Creation.R"
