@@ -15,10 +15,10 @@ library(rgdal)
 # Load in quadrants shapefiles for later masking
 
 # Load shapefiles of quadrants
-NE <- readOGR("./Block_Shapefile", layer = "Northeast_Quadrant")
-NW <- readOGR("./Block_Shapefile", layer = "Northwest_Quadrant")
-SW <- readOGR("./Block_Shapefile", layer = "Southwest_Quadrant")
-SE <- readOGR("./Block_Shapefile", layer = "Southeast_Quadrant")
+NE <- readOGR("../Block_Shapefile", layer = "Northeast_Quadrant")
+NW <- readOGR("../Block_Shapefile", layer = "Northwest_Quadrant")
+SW <- readOGR("../Block_Shapefile", layer = "Southwest_Quadrant")
+SE <- readOGR("../Block_Shapefile", layer = "Southeast_Quadrant")
 
 # NE <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northeast_Quadrant")
 # NW <- readOGR("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/Block_Shapefiles", layer = "Northwest_Quadrant")
@@ -41,7 +41,7 @@ names(shapefiles) <- c("Calibrated_with_NE_NW", "Calibrated_with_NE_SE", "Calibr
 
 
 
-setwd("./Presence_only_GeoPartitioning_Eval/KDE_Maps")
+setwd("../Presence_only_GeoPartitioning_Eval/KDE_Maps")
 
 
 #Collect continuous rasters

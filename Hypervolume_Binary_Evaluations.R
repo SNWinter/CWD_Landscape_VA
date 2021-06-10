@@ -38,7 +38,7 @@ names(shapefiles) <- c("Calibrated_with_NE_NW", "Calibrated_with_NE_SE", "Calibr
 
 # KDE Evaluation ----------------------------------------------------------
 
-setwd("./Presence_only_GeoPartitioning_Eval/KDE_Maps")
+setwd("../Presence_only_GeoPartitioning_Eval/KDE_Maps")
 
 #Collect rasters
 p_rast_list <- list.files(".", pattern = "Point_Binary", recursive = T)
@@ -68,10 +68,10 @@ for (i in 1:6) {
   coordinates(test_points)<- ~x + y
   proj4string(test_points)<- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" # Convert to spatial points
   
-  # Evaluate using cumulative binomial probability
+  # Evaluate using cumulative binomial probability 
   
-  # Harvest locations
-  validation_data <- raster::extract(masked_point, test_points)
+  # Harvest locations 
+  validation_data <- raster::extract(masked_point, test_points) 
   successes <- sum(validation_data)
   number.trials <- length(validation_data)
   prop.area   <- summary(as.numeric(masked_point@data@values))
