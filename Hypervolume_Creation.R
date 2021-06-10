@@ -180,12 +180,12 @@ for(i in 1:3){
   #Harvest Location scale
   hv_train<- hypervolume::hypervolume_gaussian(training.data,
                                   name='training',
-                                  # kde.bandwidth = estimate_bandwidth(training.data, method = "cross-validation"),
+                                  kde.bandwidth = estimate_bandwidth(training.data, method = "cross-validation"),
                                   samples.per.point=ceiling((10^(3 + sqrt(ncol(training.data))))/nrow(training.data)))
   #Home Range scale
   hv_buffer<- hypervolume::hypervolume_gaussian(training.buffer,
                                    name='training.buffer',
-                                   # kde.bandwidth = estimate_bandwidth(training.buffer, method = "cross-validation"),
+                                   kde.bandwidth = estimate_bandwidth(training.buffer, method = "cross-validation"),
                                    samples.per.point=ceiling((10^(3 + sqrt(ncol(training.buffer))))/nrow(training.buffer)))
   
   # Construct SVM hypervolumes at both scales (less time intensive)
@@ -302,12 +302,12 @@ for(i in 1:3){
   #Harvest Location scale
   hv_train<- hypervolume::hypervolume_gaussian(training.data,
                                   name='training',
-                                  # kde.bandwidth = estimate_bandwidth(training.data, method = "cross-validation"),
+                                  kde.bandwidth = estimate_bandwidth(training.data, method = "cross-validation"),
                                   samples.per.point=ceiling((10^(3 + sqrt(ncol(training.data))))/nrow(training.data)))
   #Home Range scale
   hv_buffer<- hypervolume::hypervolume_gaussian(training.buffer,
                                    name='training.buffer',
-                                   # kde.bandwidth = estimate_bandwidth(training.buffer, method = "cross-validation"),
+                                   kde.bandwidth = estimate_bandwidth(training.buffer, method = "cross-validation"),
                                    samples.per.point=ceiling((10^(3 + sqrt(ncol(training.buffer))))/nrow(training.buffer)))
   
   # Construct SVM hypervolumes at both scales (less time intensive)

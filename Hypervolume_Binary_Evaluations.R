@@ -2,8 +2,7 @@
 # Script 3 of 5 authored by Steven N. Winter
 
 #Note: Quadrant masking depends on creation of shapefiles covering the extent of the quadrant.
-      #Due to the dummy nature of the data in this sample code, quadrant shapefiles listed were created from real CWD data and thus not provided.
-      #Code is provided for reference purposes.
+#Should the user decide to generate other random data for testing, provided shapefiles are not guaranteed to work.
 
 # Install the following packages if not previously installed
 library(raster)
@@ -46,6 +45,7 @@ b_rast_list <- list.files(".", pattern = "Buffer_Binary", recursive = T)
 
 #Prepare testing data and results storage from evalution
 test_list <- list.files(".", pattern = "^Test_Data", recursive = T)
+test_list <- rev(test_list) #Need to reverse ordering to test the complementary sets.
 
 dir.create("Results")
 kde_evaluation_df <- data.frame()
@@ -68,15 +68,15 @@ for (i in 1:6) {
   coordinates(test_points)<- ~x + y
   proj4string(test_points)<- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" # Convert to spatial points
   
-  # Evaluate using cumulative binomial probability 
+  # Evaluate using cumulative binomial probability
   
   # Harvest locations 
-  validation_data <- raster::extract(masked_point, test_points) 
-  successes <- sum(validation_data)
-  number.trials <- length(validation_data)
-  prop.area   <- summary(as.numeric(masked_point@data@values))
-  prop.area <- prop.area[[4]]
-  p.value <- 1- pbinom(successes, number.trials, prop.area)
+  validation_data <- raster::extract(masked_point, test_points) #Get value of either 0 or 1 at raster
+  successes <- sum(validation_data) #Total successes
+  number.trials <- length(validation_data) #Total trials
+  prop.area   <- summary(as.numeric(masked_point@data@values)) #Need to acknowledge proportion of area accessible
+  prop.area <- prop.area[[4]] #Extract the value specifically
+  p.value <- 1- pbinom(successes, number.trials, prop.area) #Calculate probability from binomial
   # print(p.value)
   
   # Home ranges
@@ -106,12 +106,13 @@ write.csv(kde_evaluation_df, file = "./Results/Cumulative_Binom_Stats_Pres_Only.
 
 # SVM Evaluation ----------------------------------------------------------
 
-setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_only_GeoPartitioning_Eval/SVM_Maps")
+
+setwd("../SVM_Maps")
 svm_evaluation_df <- data.frame()
 
 #Collect rasters
-p_rast_list <- list.files(".", pattern = "Point_Binary", recursive = T)
-b_rast_list <- list.files(".", pattern = "Buffer_Binary", recursive = T)
+p_rast_list <- list.files(".", pattern = "Point_SVM", recursive = T)
+b_rast_list <- list.files(".", pattern = "Buffer_SVM", recursive = T)
 
 
 #Prepare testing data and results storage from evalution

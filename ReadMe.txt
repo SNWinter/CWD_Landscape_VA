@@ -11,4 +11,6 @@ Sequence of scripts:
 
 All scripts were tested and corrected for incompatibilities in R package updates as of 09 June 2021.
 
+Some code manipulation of relative paths may be necessary depending on R project clone location.
+
 As outlined in the data accessibility section of the manuscript, in this repository contains sample code and artifical epidemiological data due to privacy restrictions associated with the real CWD data. We encourage all requests for raw data to be sent to the appropriate channels mentioned in our statement.

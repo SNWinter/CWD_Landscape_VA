@@ -16,12 +16,13 @@ library(hypervolume)
 library(doParallel)
 
 # Import CWD Points and Organize for Hx -----------------------------------
-setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data")
+# setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data")
 # dat<- read.csv("Master_CWD_Data.csv", header=T) #read csv from wd
 dat <- read.csv("CWD_Pseudo_Data_Random_Points.csv") # Psuedo points
 
 dir.create("Presence_Only_Variability")
-setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_Only_Variability")
+setwd("./Presence_Only_Variability")
+# setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_Only_Variability")
 # positives<- subset(dat, dat$status>0)
 # positives_reduced<- positives%>%
 #   dplyr::select(long, lat)
@@ -30,8 +31,10 @@ positives<- subset(dat, dat$status>0)
 positives_reduced<- positives%>% dplyr::select(x, y)
 
 # Enter EVI PCA environmental data ----------------------------------------
-r1<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC1.tif")
-r2<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC2.tif")
+r1<-raster("../EVI_Data/PC1.tif")
+r2<-raster("../EVI_Data/PC2.tif")
+# r1<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC1.tif")
+# r2<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC2.tif")
 # r3<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC3.tif")
 # r4<-raster("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/Data/EVI/Final_250m/VI_16Days_250m_v6/EVI/NicheA_PCA/PC4.tif")
 # env.layers <- stack(r1,r2,r3,r4)
@@ -52,17 +55,18 @@ positive.buffer <- as.data.frame(raster::extract(env.layers, positives_reduced,
 positive.buffer <- na.omit(positive.buffer) 
 
 # Construct Master hypervolumes
-hv_pos_points<- hypervolume_gaussian(positive_data, 
-                                     name='Pos_Full_HarvLoc_Gaus', 
-                                     kde.bandwidth = estimate_bandwidth(positive_data, 
-                                                                        method = "cross-validation"), 
-                                     samples.per.point=ceiling((10^(3 + sqrt(ncol(positive_data))))/nrow(positive_data)))
-
-hv_pos_buffer<- hypervolume_gaussian(positive.buffer, 
-                                     name='Pos_Full_HomRang_Gaus', 
-                                     kde.bandwidth = estimate_bandwidth(positive.buffer, 
-                                                                        method = "cross-validation"), 
-                                     samples.per.point=ceiling((10^(3 + sqrt(ncol(positive.buffer))))/nrow(positive.buffer)))
+hv_pos_points <- hypervolume::hypervolume_svm(positive_data, name='Pos_Full_HarvLoc_SVM')
+# hv_pos_points<- hypervolume_gaussian(positive_data, 
+#                                      name='Pos_Full_HarvLoc_Gaus', 
+#                                      kde.bandwidth = estimate_bandwidth(positive_data, 
+#                                                                         method = "cross-validation"), 
+#                                      samples.per.point=ceiling((10^(3 + sqrt(ncol(positive_data))))/nrow(positive_data)))
+hv_pos_buffer <- hypervolume::hypervolume_svm(positive.buffer, name='Pos_Full_HomRang_SVM')
+# hv_pos_buffer<- hypervolume_gaussian(positive.buffer, 
+#                                      name='Pos_Full_HomRang_Gaus', 
+#                                      kde.bandwidth = estimate_bandwidth(positive.buffer, 
+#                                                                         method = "cross-validation"), 
+#                                      samples.per.point=ceiling((10^(3 + sqrt(ncol(positive.buffer))))/nrow(positive.buffer)))
 
 
 
@@ -82,7 +86,7 @@ comb <- function(x, ...) {
 
 # Revert back to DF for iterative removal
 positives_reduced<- positives%>%
-  dplyr::select(long, lat)
+  dplyr::select(x, y)
 
 #Begin foreach loop that creates hypervolumes with n-1 cases, then calculate their volumes
 volumes_results <- foreach(i = 1:length(positives$x), 
@@ -106,17 +110,21 @@ volumes_results <- foreach(i = 1:length(positives$x),
                              buffer_data_sub <- na.omit(buffer_data_sub) 
                              
                              
-                             hv_obj<- hypervolume_gaussian(data_subpositives, 
-                                                           name='Pos_Minus_HarvLoc_Gaus', 
-                                                           kde.bandwidth = estimate_bandwidth(data_subpositives,
-                                                                                              method = "cross-validation"), #Used to reduce predicitive error
-                                                           samples.per.point=ceiling((10^(3 + sqrt(ncol(data_subpositives))))/nrow(data_subpositives)))
+                             hv_obj<- hypervolume_svm(data_subpositives, name= "Pos_Minus_HarvLoc_SVM")
                              
-                             hv_buffer <- hypervolume_gaussian(buffer_data_sub, 
-                                                               name='Pos_Minus_HomRang_Gaus', 
-                                                               kde.bandwidth = estimate_bandwidth(buffer_data_sub, 
-                                                                                                  method = "cross-validation"), 
-                                                               samples.per.point=ceiling((10^(3 + sqrt(ncol(buffer_data_sub))))/nrow(buffer_data_sub)))
+                             hv_buffer<- hypervolume_svm(buffer_data_sub, name= "Pos_Minus_HomRang_SVM")
+                             
+                             # hv_obj<- hypervolume_gaussian(data_subpositives, 
+                             #                               name='Pos_Minus_HarvLoc_Gaus', 
+                             #                               kde.bandwidth = estimate_bandwidth(data_subpositives,
+                             #                                                                  method = "cross-validation"), #Used to reduce predicitive error
+                             #                               samples.per.point=ceiling((10^(3 + sqrt(ncol(data_subpositives))))/nrow(data_subpositives)))
+                             # 
+                             # hv_buffer <- hypervolume_gaussian(buffer_data_sub, 
+                             #                                   name='Pos_Minus_HomRang_Gaus', 
+                             #                                   kde.bandwidth = estimate_bandwidth(buffer_data_sub, 
+                             #                                                                      method = "cross-validation"), 
+                             #                                   samples.per.point=ceiling((10^(3 + sqrt(ncol(buffer_data_sub))))/nrow(buffer_data_sub)))
                             
                               # Collect volume from n-1 hypervolume
                               #Harvest location volumes
@@ -131,8 +139,8 @@ volumes_results <- foreach(i = 1:length(positives$x),
                              
                               
                               # Write Rasters
-                              hv_obj_map<- hypervolume_project(hv_obj, rasters = env.layers, type = "probability")
-                              hv_buffer_map <- hypervolume_project(hv_buffer, rasters = env.layers, type = "probability")
+                              hv_obj_map<- hypervolume_project(hv_obj, rasters = env.layers, type = "inclusion")
+                              hv_buffer_map <- hypervolume_project(hv_buffer, rasters = env.layers, type = "inclusion")
                               
                               
                             list(temp_pt_volume, temp_volume, hv_obj, hv_buffer, hv_obj_map, hv_buffer_map)
@@ -150,23 +158,24 @@ buf_list <- volumes_results[[4]]
 # Write rasters and calculate average 
 map_point_list <- volumes_results[[5]]
 map_buffer_list <- volumes_results[[6]]
-dir.create("Hypervolume_KDE_Projections_Point")
+dir.create("Hypervolume_SVM_Projections_Point")
+dir.create("Hypervolume_SVM_Projections_Buffer")
 
 for (i in 1:length(map_point_list)) {
   hv_obj_map <- map_point_list[[i]]
   hv_buffer_map <- map_buffer_list[[i]]
-  output_filename<- paste0('./Hypervolume_KDE_Projections_Point/','Without_',i,'_map')
-  binary_output_filename<- paste0('./Hypervolume_KDE_Projections_Buffer_2020_cases/','Without_',i,'_map')
+  output_filename<- paste0('./Hypervolume_SVM_Projections_Point/','Without_',i,'_map')
+  binary_output_filename<- paste0('./Hypervolume_SVM_Projections_Buffer/','Without_',i,'_map')
   writeRaster(hv_obj_map, filename = output_filename, format='GTiff', overwrite=T)
   writeRaster(hv_buffer_map, filename = binary_output_filename, format='GTiff', overwrite=T)
 }
 
 point_stack <- raster::stack(map_point_list)
 buffer_stack <- raster::stack(map_buffer_list)
-average_raster_point <- raster::calc(point_stack, fun = mean, na.rm = TRUE)
-average_raster_buffer <- raster::calc(buffer_stack, fun = mean, na.rm = TRUE)
-writeRaster(average_raster_point, filename = "Continuous_KDE_2020_Point_cases_Mean_Output.tif")
-writeRaster(average_raster_buffer, filename = "Continuous_KDE_2020_buffer_cases_Mean_Output.tif")
+sum_raster_point <- raster::calc(point_stack, fun = sum, na.rm = TRUE)
+sum_raster_buffer <- raster::calc(buffer_stack, fun = sum, na.rm = TRUE)
+writeRaster(sum_raster_point, filename = "Continuous_SVM_2020_Point_cases_Sum_Output.tif")
+writeRaster(sum_raster_buffer, filename = "Continuous_SVM_2020_buffer_cases_Sum_Output.tif")
 
 # Write Volume CSVs -------------------------------------------------------
 write.csv(volumes_df, "Point_Variation_Volumes.csv")
@@ -181,7 +190,8 @@ overlap_buf_df <- data.frame()
 i=1 #Reset counter
 
 dir.create('./Compare_Presence_N_vs_N-1')
-setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_Only_Variability/Compare_Presence_N_vs_N-1")
+setwd("./Compare_Presence_N_vs_N-1")
+# setwd("//idstorage.cnre.vt.edu/IDStorage1/Students/Steven_Winter/CWD/Raw_VA_CWD_Data/Presence_Only_Variability/Compare_Presence_N_vs_N-1")
 
 #Overlap statistics at Harvest Location scale
 overlap_pt_df <- foreach(i = 1:length(hv_list), .combine = 'rbind', .packages = "hypervolume") %dopar% {

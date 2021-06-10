@@ -3,8 +3,7 @@
 # Script 4 of 5 authored by Steven N. Winter
 
 #Note: Quadrant masking depends on creation of shapefiles covering the extent of the quadrant.
-      #Due to the dummy nature of the data in this sample code, quadrant shapefiles listed were created from real CWD data and thus not provided.
-      #Code is provided for reference purposes.
+      #Should the user decide to generate other random data for testing, provided shapefiles are not guaranteed to work.
 
 # Install the following packages if not previously installed
 library(raster)
@@ -41,7 +40,7 @@ names(shapefiles) <- c("Calibrated_with_NE_NW", "Calibrated_with_NE_SE", "Calibr
 
 
 
-setwd("../Presence_only_GeoPartitioning_Eval/KDE_Maps")
+setwd("../KDE_Maps")
 
 
 #Collect continuous rasters
